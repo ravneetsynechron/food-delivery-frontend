@@ -16,7 +16,6 @@ import RestaurantDashboard from './pages/RestaurantDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import AdminRestaurants from './pages/AdminRestaurant';
 import RestaurantDetailPage from './pages/RestaurantDetailPage';
 const ProtectedRoute = ({ children, roles }) => {
   const { user, isAuthenticated } = useAuth();
@@ -46,7 +45,6 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/restaurants" element={<Restaurants />} />
                 <Route path="/restaurants/:id" element={<RestaurantDetail />} />
-                <Route path="/admin-restaurants" element={<AdminRestaurants />} />
                 <Route path="/cart" element={
                   <ProtectedRoute>
                     <Cart />
