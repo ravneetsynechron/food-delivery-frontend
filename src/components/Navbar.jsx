@@ -6,12 +6,12 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { getItemCount } = useCart();
   const navigate = useNavigate();
-
+  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-
+  
   const getDashboardLink = () => {
     if (!user) return null;
     switch (user.role) {
@@ -33,12 +33,13 @@ const Navbar = () => {
           <Link to="/" className="text-2xl font-bold text-primary">
             🍕 FoodDelivery
           </Link>
-
           <div className="flex items-center space-x-6">
-            <Link to="/restaurants" className="hover:text-primary">
-              Restaurants
-            </Link>
-
+            {/* Show "Restaurants" only if user.role is NOT 'RESTAURANT_OWNER' */}
+            {(!user || user.role !== 'RESTAURANT_OWNER') && (
+              <Link to="/restaurants" className="hover:text-primary">
+                Restaurants
+              </Link>
+            )}
             {isAuthenticated ? (
               <>
                 {getDashboardLink()}
@@ -58,14 +59,8 @@ const Navbar = () => {
                     </Link>
                   </>
                 )}
-
-                <span className="text-gray-600">
-                  Hi, {user?.firstName}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="btn-secondary text-sm"
-                >
+                <span className="text-gray-600">Hi, {user?.firstName}</span>
+                <button onClick={handleLogout} className="btn-secondary text-sm">
                   Logout
                 </button>
               </>

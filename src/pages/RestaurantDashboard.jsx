@@ -12,7 +12,6 @@ const RestaurantDashboard = () => {
     imageUrl: '',
     phoneNumber: '',
   });
-
   const navigate = useNavigate();
 
   const handleViewDetails = (id) => {
@@ -56,40 +55,55 @@ const RestaurantDashboard = () => {
   };
 
   return (
-    <div>
-      <h2>Manage Restaurants</h2>
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Name"
-          name="name"
-          value={newRestaurant.name}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Cuisine Type"
-          name="cuisineType"
-          value={newRestaurant.cuisineType}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          name="address"
-          value={newRestaurant.address}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">Manage Restaurants</h2>
+      
+      {/* Add New Restaurant */}
+      <div className="bg-white shadow rounded p-6 mb-8 space-y-4">
+        <h3 className="text-xl font-semibold mb-4 text-gray-700">Add New Restaurant</h3>
+        <div className="grid md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Name"
+            name="name"
+            value={newRestaurant.name}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+          <input
+            type="text"
+            placeholder="Cuisine Type"
+            name="cuisineType"
+            value={newRestaurant.cuisineType}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Address"
+            name="address"
+            value={newRestaurant.address}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+          <input
+            type="text"
+            placeholder="Phone Number"
+            name="phoneNumber"
+            value={newRestaurant.phoneNumber}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+        </div>
         <input
           type="text"
           placeholder="Description"
           name="description"
           value={newRestaurant.description}
           onChange={handleInputChange}
-          className="border p-2 mr-2"
+          className="border border-gray-300 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
         <input
           type="text"
@@ -97,33 +111,58 @@ const RestaurantDashboard = () => {
           name="imageUrl"
           value={newRestaurant.imageUrl}
           onChange={handleInputChange}
-          className="border p-2 mr-2"
+          className="border border-gray-300 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
-        <input
-          type="text"
-          placeholder="Phone Number"
-          name="phoneNumber"
-          value={newRestaurant.phoneNumber}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <button onClick={handleAddRestaurant} className="bg-blue-500 text-white p-2 rounded">
+        <button
+          onClick={handleAddRestaurant}
+          className="ml-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition"
+        >
           Add Restaurant
         </button>
       </div>
-      <ul>
+
+      {/* List of Restaurants */}
+      <div className="grid md:grid-cols-2 gap-6">
         {restaurants.map((restaurant) => (
-          <li key={restaurant.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', borderBottom: '1px solid #ccc' }}>
-            <div onClick={() => handleViewDetails(restaurant.id)} style={{ cursor: 'pointer' }}>
-              <strong>{restaurant.name}</strong>
-              {restaurant.description && <p className="text-gray-600 text-sm">{restaurant.description}</p>}
+          <div
+            key={restaurant.id}
+            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition cursor-pointer flex flex-col"
+            onClick={() => handleViewDetails(restaurant.id)}
+          >
+            {restaurant.imageUrl ? (
+              <img
+                src={restaurant.imageUrl}
+                alt={restaurant.name}
+                className="w-full h-48 object-cover rounded mb-4"
+              />
+            ) : (
+              <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded mb-4 text-gray-400 text-xl">
+                No Image
+              </div>
+            )}
+
+            {/* Info */}
+            <h3 className="text-xl font-semibold mb-2 text-gray-800">{restaurant.name}</h3>
+            {restaurant.description && (
+              <p className="text-gray-600 mb-2 line-clamp-2">{restaurant.description}</p>
+            )}
+            <div className="flex justify-between text-sm text-gray-600 mb-4">
+              <span>{restaurant.cuisineType}</span>
+              <span>{restaurant.address}</span>
             </div>
-            <button onClick={() => handleDelete(restaurant.id)} className="bg-red-500 text-white p-1 rounded">
+            {/* Delete Button inside card */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // prevent view details
+                handleDelete(restaurant.id);
+              }}
+              className="mt-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow transition self-start"
+            >
               Delete
             </button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
