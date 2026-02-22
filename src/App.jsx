@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
- 
+
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -17,20 +17,21 @@ import DeliveryDashboard from './pages/DeliveryDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import AdminRestaurants from './pages/AdminRestaurant';
+import RestaurantDetailPage from './pages/RestaurantDetailPage';
 const ProtectedRoute = ({ children, roles }) => {
   const { user, isAuthenticated } = useAuth();
- 
+
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
- 
+
   if (roles && !roles.includes(user?.role)) {
     return <Navigate to="/" />;
   }
- 
+
   return children;
 };
- 
+
 function App() {
   return (
     <AuthProvider>
@@ -76,6 +77,11 @@ function App() {
                     <DeliveryDashboard />
                   </ProtectedRoute>
                 } />
+                <Route path="/restaurant-dashboard/:id" element={
+                  <ProtectedRoute roles={['RESTAURANT_OWNER']}> {/* or omit roles if public */}
+                    <RestaurantDetailPage />
+                  </ProtectedRoute>
+                } />
               </Routes>
             </main>
             <ToastContainer position="bottom-right" />
@@ -85,5 +91,5 @@ function App() {
     </AuthProvider>
   );
 }
- 
+
 export default App;

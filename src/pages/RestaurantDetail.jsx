@@ -57,8 +57,12 @@ const RestaurantDetail = () => {
     <div>
       <div className="card mb-8">
         <div className="flex items-start gap-6">
-          <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-            <span className="text-5xl">🍽️</span>
+          <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+            {restaurant.imageUrl ? (
+              <img src={restaurant.imageUrl} alt={restaurant.name} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-5xl">🍽️</span>
+            )}
           </div>
           <div>
             <h1 className="text-3xl font-bold mb-2">{restaurant.name}</h1>

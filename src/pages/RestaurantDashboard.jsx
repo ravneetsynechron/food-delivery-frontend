@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { restaurantAPI } from '../services/api';
- 
+import { useNavigate } from 'react-router-dom';
+
 const RestaurantDashboard = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [newRestaurant, setNewRestaurant] = useState({
@@ -11,11 +12,17 @@ const RestaurantDashboard = () => {
     imageUrl: '',
     phoneNumber: '',
   });
- 
+
+  const navigate = useNavigate();
+
+  const handleViewDetails = (id) => {
+    navigate(`/restaurant-dashboard/${id}`);
+  };
+
   useEffect(() => {
     fetchRestaurants();
   }, []);
- 
+
   const fetchRestaurants = async () => {
     try {
       const response = await restaurantAPI.getAll();
@@ -24,11 +31,11 @@ const RestaurantDashboard = () => {
       console.error('Error fetching restaurants:', error);
     }
   };
- 
+
   const handleInputChange = (e) => {
     setNewRestaurant({ ...newRestaurant, [e.target.name]: e.target.value });
   };
- 
+
   const handleAddRestaurant = async () => {
     try {
       await restaurantAPI.create(newRestaurant);
@@ -38,7 +45,7 @@ const RestaurantDashboard = () => {
       console.error('Error adding restaurant:', error);
     }
   };
- 
+
   const handleDelete = async (id) => {
     try {
       await restaurantAPI.delete(id);
@@ -47,7 +54,7 @@ const RestaurantDashboard = () => {
       console.error('Error deleting restaurant:', error);
     }
   };
- 
+
   return (
     <div>
       <h2>Manage Restaurants</h2>
@@ -106,8 +113,8 @@ const RestaurantDashboard = () => {
       </div>
       <ul>
         {restaurants.map((restaurant) => (
-          <li key={restaurant.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <div>
+          <li key={restaurant.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', borderBottom: '1px solid #ccc' }}>
+            <div onClick={() => handleViewDetails(restaurant.id)} style={{ cursor: 'pointer' }}>
               <strong>{restaurant.name}</strong>
               {restaurant.description && <p className="text-gray-600 text-sm">{restaurant.description}</p>}
             </div>
@@ -120,5 +127,5 @@ const RestaurantDashboard = () => {
     </div>
   );
 };
- 
+
 export default RestaurantDashboard;
