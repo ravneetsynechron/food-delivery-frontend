@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { restaurantAPI } from '../services/api';
 
-const RestaurantDetailPage = () => {
+const RestaurantDashboardItems = () => {
     const { id } = useParams();
     const [restaurant, setRestaurant] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
@@ -212,4 +212,4 @@ const RestaurantDetailPage = () => {
     );
 };
 
-export default RestaurantDetailPage;
+export default RestaurantDashboardItems;

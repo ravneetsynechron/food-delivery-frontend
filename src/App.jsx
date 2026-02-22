@@ -16,7 +16,7 @@ import RestaurantDashboard from './pages/RestaurantDashboard';
 import DeliveryDashboard from './pages/DeliveryDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import RestaurantDetailPage from './pages/RestaurantDetailPage';
+import RestaurantDashboardItems from './pages/RestaurantDashboardItems';
 const ProtectedRoute = ({ children, roles }) => {
   const { user, isAuthenticated } = useAuth();
 
@@ -77,7 +77,7 @@ function App() {
                 } />
                 <Route path="/restaurant-dashboard/:id" element={
                   <ProtectedRoute roles={['RESTAURANT_OWNER']}> {/* or omit roles if public */}
-                    <RestaurantDetailPage />
+                    <RestaurantDashboardItems />
                   </ProtectedRoute>
                 } />
               </Routes>
