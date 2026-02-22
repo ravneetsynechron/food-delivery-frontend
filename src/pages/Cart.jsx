@@ -3,20 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useCart } from '../context/CartContext';
 import { orderAPI } from '../services/api';
+import MapInput from './MapInput';
 
 const Cart = () => {
-  const { items, restaurantId, restaurantName, updateQuantity, removeItem, clearCart, getTotal } = useCart();
-  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const {
+    items,
+    restaurantId,
+    restaurantName,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    getTotal
+  } = useCart();
+
+  // State for location selected via MapInput
+  const [deliveryCoords, setDeliveryCoords] = useState({ lat: null, lng: null });
+  const [deliveryAddr, setDeliveryAddr] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-    const handlePlaceOrder = async () => {
-    if (!deliveryAddress.trim()) {
-      toast.error('Please enter delivery address');
+  // When user searches/selects location in MapInput
+  const handleLocationChange = (latlng, address) => {
+    setDeliveryCoords(latlng);
+    setDeliveryAddr(address);
+  };
+
+  // Handle order submission
+  const handlePlaceOrder = async () => {
+    if (!deliveryAddr.trim() || deliveryCoords.lat === null) {
+      toast.error('Please select a delivery address');
       return;
     }
-
     setLoading(true);
     try {
       const orderData = {
@@ -26,19 +44,17 @@ const Cart = () => {
           menuItemName: item.name,
           quantity: item.quantity,
         })),
-        deliveryAddress,
+        deliveryAddress: deliveryAddr,
+        deliveryLat: deliveryCoords.lat,
+        deliveryLng: deliveryCoords.lng,
         specialInstructions,
         paymentMethod: 'CARD',
       };
-
       const response = await orderAPI.create(orderData);
       clearCart();
-
       if (response.data.checkoutUrl) {
-        // Redirect to Stripe Checkout (or simulated checkout)
         window.location.href = response.data.checkoutUrl;
       } else {
-        // Fallback: if no checkout URL, go to order tracking
         toast.success('Order placed successfully!');
         navigate(`/orders/${response.data.id}`);
       }
@@ -65,10 +81,12 @@ const Cart = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">Your Cart</h1>
+    <div className="max-w-3xl mx-auto p-4">
+      {/* Cart Header */}
+      <h1 className="text-3xl font-bold mb-4">Your Cart</h1>
       <p className="text-gray-600 mb-8">From {restaurantName}</p>
 
+      {/* Cart Items */}
       <div className="card mb-6">
         {items.map((item) => (
           <div
@@ -109,19 +127,17 @@ const Cart = () => {
         ))}
       </div>
 
+      {/* MapInput for delivery address */}
+      <div className="card mb-6">
+        <MapInput
+          onLocationChange={handleLocationChange}
+          initialAddress={deliveryAddr}
+        />
+      </div>
+
+      {/* Additional instructions and total */}
       <div className="card mb-6">
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Delivery Address *</label>
-          <textarea
-            value={deliveryAddress}
-            onChange={(e) => setDeliveryAddress(e.target.value)}
-            className="input-field"
-            rows={2}
-            placeholder="Enter your delivery address"
-            required
-          />
-        </div>
-        <div>
           <label className="block text-gray-700 mb-2">Special Instructions</label>
           <textarea
             value={specialInstructions}
@@ -131,9 +147,6 @@ const Cart = () => {
             placeholder="Any special requests?"
           />
         </div>
-      </div>
-
-      <div className="card">
         <div className="flex justify-between items-center mb-4">
           <span className="text-xl font-bold">Total</span>
           <span className="text-2xl font-bold text-primary">
